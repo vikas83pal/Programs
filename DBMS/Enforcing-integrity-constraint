@@ -1,0 +1,136 @@
+mysql> use company;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| emp               |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> create table customer(cid int(3),cname varchar(10));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> alter table customer
+    -> add constraint pk primary key(cid);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc customer;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cid   | int         | NO   | PRI | NULL    |       |
+| cname | varchar(10) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into customer values(1,'John'),(2,'Alice'),(3,'Bob');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer;
++-----+-------+
+| cid | cname |
++-----+-------+
+|   1 | John  |
+|   2 | Alice |
+|   3 | Bob   |
++-----+-------+
+3 rows in set (0.00 sec)
+mysql> create table orders(oid int(3) primary key,
+    -> odate date,
+    -> cid int(3),
+    -> foreign key(cid) references customer(cid)
+    -> on delete cascade
+    -> on update no action
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.06 sec)
+
+mysql> desc orders;
++-------+------+------+-----+---------+-------+
+| Field | Type | Null | Key | Default | Extra |
++-------+------+------+-----+---------+-------+
+| oid   | int  | NO   | PRI | NULL    |       |
+| odate | date | YES  |     | NULL    |       |
+| cid   | int  | YES  | MUL | NULL    |       |
++-------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> insert into orders values(102,'2023-01-01',1);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from orders;
++-----+------------+------+
+| oid | odate      | cid  |
++-----+------------+------+
+| 102 | 2023-01-01 |    1 |
++-----+------------+------+
+1 row in set (0.00 sec)
+
+mysql> update orders
+    -> set oid=101
+    -> where cid=1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from orders;
++-----+------------+------+
+| oid | odate      | cid  |
++-----+------------+------+
+| 101 | 2023-01-01 |    1 |
++-----+------------+------+
+1 row in set (0.00 sec)
+
+mysql> insert into orders values(102,'2023-02-01',2);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into orders values(103,'2023-03-01',3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from orders;
++-----+------------+------+
+| oid | odate      | cid  |
++-----+------------+------+
+| 101 | 2023-01-01 |    1 |
+| 102 | 2023-02-01 |    2 |
+| 103 | 2023-03-01 |    3 |
++-----+------------+------+
+3 rows in set (0.00 sec)
+mysql> select * from customer;
++-----+-------+
+| cid | cname |
++-----+-------+
+|   1 | John  |
+|   2 | Alice |
+|   3 | Bob   |
++-----+-------+
+3 rows in set (0.00 sec)
+
+mysql> delete from customer where cid=3;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from customer;
++-----+-------+
+| cid | cname |
++-----+-------+
+|   1 | John  |
+|   2 | Alice |
++-----+-------+
+2 rows in set (0.00 sec)
+
+mysql> select * from orders;
++-----+------------+------+
+| oid | odate      | cid  |
++-----+------------+------+
+| 101 | 2023-01-01 |    1 |
+| 102 | 2023-02-01 |    2 |
++-----+------------+------+
+2 rows in set (0.00 sec)
+
+mysql> insert into orders values(103,'2023-03-01',3);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`orders`, CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`) ON DELETE CASCADE)
+mysql> notee;
