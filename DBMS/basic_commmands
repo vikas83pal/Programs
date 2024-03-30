@@ -1,0 +1,103 @@
+mysql> use company;
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| emp               |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> desc emp;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | YES  |     | NULL    |       |
+| ename | varchar(10) | YES  |     | NULL    |       |
+| sal   | float       | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from emp;
+Empty set (0.00 sec)
+
+mysql> insert into emp values(101,'aaa',1000);
+Query OK, 1 row affected (0.04 sec)
+
+
+mysql> insert into emp (eid,ename,sal) values(103,'ccc'3000);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '3000)' at line 1
+mysql> insert into emp values(102,'bbb',2000),(103,'ccc',3000);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from emp;
++------+-------+------+
+| eid  | ename | sal  |
++------+-------+------+
+|  101 | aaa   | 1000 |
+|  102 | bbb   | 2000 |
+|  102 | bbb   | 2000 |
+|  103 | ccc   | 3000 |
++------+-------+------+
+4 rows in set (0.01 sec)
+
+mysql> delete from emp
+    -> where eid=102;
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> select * from emp;
++------+-------+------+
+| eid  | ename | sal  |
++------+-------+------+
+|  101 | aaa   | 1000 |
+|  103 | ccc   | 3000 |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> insert into emp values(104,'ddd',4000),(105,'eee',5000);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from emp;
++------+-------+------+
+| eid  | ename | sal  |
++------+-------+------+
+|  101 | aaa   | 1000 |
+|  103 | ccc   | 3000 |
+|  104 | ddd   | 4000 |
+|  105 | eee   | 5000 |
++------+-------+------+
+4 rows in set (0.00 sec)
+
+mysql> notee;
+mysql> select * from emp
+    -> where sal between 1000 and 4000;
++------+-------+------+
+| eid  | ename | sal  |
++------+-------+------+
+|  101 | aaa   | 1000 |
+|  103 | ccc   | 3000 |
+|  104 | ddd   | 4000 |
++------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> select * from emp where sal in(1000,3000);
++------+-------+------+
+| eid  | ename | sal  |
++------+-------+------+
+|  101 | aaa   | 1000 |
+|  103 | ccc   | 3000 |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from emp where sal not in(1000,3000);
++------+-------+------+
+| eid  | ename | sal  |
++------+-------+------+
+|  104 | ddd   | 4000 |
+|  105 | eee   | 5000 |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> notee;
