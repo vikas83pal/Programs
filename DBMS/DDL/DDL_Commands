@@ -1,0 +1,101 @@
+mysql> create database university;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use university;
+Database changed
+mysql> create table student(Roll_No varchar(3),
+    -> name varchar(10),
+    -> age int(2)
+    -> );
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> desc student;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| Roll_No | varchar(3)  | YES  |     | NULL    |       |
+| name    | varchar(10) | YES  |     | NULL    |       |
+| age     | int         | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into student values('501','a',18);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student values('502','b',19);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student values('503','c',20);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student values('504','b',19);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student;
++---------+------+------+
+| Roll_No | name | age  |
++---------+------+------+
+| 501     | a    |   18 |
+| 502     | b    |   19 |
+| 503     | c    |   20 |
+| 504     | b    |   19 |
++---------+------+------+
+4 rows in set (0.00 sec)
+
+mysql> insert into student values('505','e',);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+mysql> insert into student values('505','e');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into student(Roll_No,name) values('505','e');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student;
++---------+------+------+
+| Roll_No | name | age  |
++---------+------+------+
+| 501     | a    |   18 |
+| 502     | b    |   19 |
+| 503     | c    |   20 |
+| 504     | b    |   19 |
+| 505     | e    | NULL |
++---------+------+------+
+5 rows in set (0.00 sec)
+
+mysql> update student
+    -> set age=20
+    -> where name='e';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from student;
++---------+------+------+
+| Roll_No | name | age  |
++---------+------+------+
+| 501     | a    |   18 |
+| 502     | b    |   19 |
+| 503     | c    |   20 |
+| 504     | b    |   19 |
+| 505     | e    |   20 |
++---------+------+------+
+5 rows in set (0.00 sec)
+
+mysql> drop column age;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'column age' at line 1
+mysql> alter table student
+    -> drop column age;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from student;
++---------+------+
+| Roll_No | name |
++---------+------+
+| 501     | a    |
+| 502     | b    |
+| 503     | c    |
+| 504     | b    |
+| 505     | e    |
++---------+------+
+5 rows in set (0.00 sec)
+
+mysql> notee;
