@@ -1,0 +1,169 @@
+mysql> create database view;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use view;
+Database changed
+mysql> CREATE TABLE customer (
+    ->     cid VARCHAR(10),
+    ->     cname VARCHAR(10),
+    ->     email VARCHAR(50), 
+    ->     phone INT(10),
+    ->     Bod DATE,
+    ->     age INT(2)
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+mysql> desc customer;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cid   | varchar(10) | YES  |     | NULL    |       |
+| cname | varchar(10) | YES  |     | NULL    |       |
+| email | varchar(50) | YES  |     | NULL    |       |
+| phone | int         | YES  |     | NULL    |       |
+| Bod   | date        | YES  |     | NULL    |       |
+| age   | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+mysql> alter table customer
+    -> add constraint pk primary key(cid);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO customer (cid, cname, email, phone, Bod, age) VALUES ('CID001', 'John', 'john@example.com', 12345670, '1990-01-01', 30), ('CID002', 'Alice', 'alice@example.com', 98765432, '1995-05-10', 25), ('CID003', 'Bob', 'bob@example.com', 55566677, '1985-12-15', 35);
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer
+    -> ;
++--------+-------+-------------------+----------+------------+------+
+| cid    | cname | email             | phone    | Bod        | age  |
++--------+-------+-------------------+----------+------------+------+
+| CID001 | John  | john@example.com  | 12345670 | 1990-01-01 |   30 |
+| CID002 | Alice | alice@example.com | 98765432 | 1995-05-10 |   25 |
+| CID003 | Bob   | bob@example.com   | 55566677 | 1985-12-15 |   35 |
++--------+-------+-------------------+----------+------------+------+
+3 rows in set (0.00 sec)
+
+mysql> create view Demo_view as
+    -> select cid,cname,age
+    -> from customer;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from Demo_view;
++--------+-------+------+
+| cid    | cname | age  |
++--------+-------+------+
+| CID001 | John  |   30 |
+| CID002 | Alice |   25 |
+| CID003 | Bob   |   35 |
++--------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Demo_view values(CID004,'xyz',60);
+ERROR 1054 (42S22): Unknown column 'CID004' in 'field list'
+mysql> insert into Demo_view values('CID004','xyz',60);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Demo_view;
++--------+-------+------+
+| cid    | cname | age  |
++--------+-------+------+
+| CID001 | John  |   30 |
+| CID002 | Alice |   25 |
+| CID003 | Bob   |   35 |
+| CID004 | xyz   |   60 |
++--------+-------+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from customer;
++--------+-------+-------------------+----------+------------+------+
+| cid    | cname | email             | phone    | Bod        | age  |
++--------+-------+-------------------+----------+------------+------+
+| CID001 | John  | john@example.com  | 12345670 | 1990-01-01 |   30 |
+| CID002 | Alice | alice@example.com | 98765432 | 1995-05-10 |   25 |
+| CID003 | Bob   | bob@example.com   | 55566677 | 1985-12-15 |   35 |
+| CID004 | xyz   | NULL              |     NULL | NULL       |   60 |
++--------+-------+-------------------+----------+------------+------+
+4 rows in set (0.00 sec)
+
+mysql> delete from Demo_view where age=60;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from Demo_view;
++--------+-------+------+
+| cid    | cname | age  |
++--------+-------+------+
+| CID001 | John  |   30 |
+| CID002 | Alice |   25 |
+| CID003 | Bob   |   35 |
++--------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> select * from customer;
++--------+-------+-------------------+----------+------------+------+
+| cid    | cname | email             | phone    | Bod        | age  |
++--------+-------+-------------------+----------+------------+------+
+| CID001 | John  | john@example.com  | 12345670 | 1990-01-01 |   30 |
+| CID002 | Alice | alice@example.com | 98765432 | 1995-05-10 |   25 |
+| CID003 | Bob   | bob@example.com   | 55566677 | 1985-12-15 |   35 |
++--------+-------+-------------------+----------+------------+------+
+3 rows in set (0.00 sec)
+
+mysql> update Demo_view
+    -> set age=30
+    -> where cid='CID003';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Demo_view;
++--------+-------+------+
+| cid    | cname | age  |
++--------+-------+------+
+| CID001 | John  |   30 |
+| CID002 | Alice |   25 |
+| CID003 | Bob   |   30 |
++--------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> select * from customer;
++--------+-------+-------------------+----------+------------+------+
+| cid    | cname | email             | phone    | Bod        | age  |
++--------+-------+-------------------+----------+------------+------+
+| CID001 | John  | john@example.com  | 12345670 | 1990-01-01 |   30 |
+| CID002 | Alice | alice@example.com | 98765432 | 1995-05-10 |   25 |
+| CID003 | Bob   | bob@example.com   | 55566677 | 1985-12-15 |   30 |
++--------+-------+-------------------+----------+------------+------+
+3 rows in set (0.01 sec)
+
+mysql> alter table Demo_view
+    -> drop column age;
+ERROR 1347 (HY000): 'view.Demo_view' is not BASE TABLE
+mysql> alter table customer drop column age;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from Demo_view;
+ERROR 1356 (HY000): View 'view.Demo_view' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
+mysql> select * from customer;
++--------+-------+-------------------+----------+------------+
+| cid    | cname | email             | phone    | Bod        |
++--------+-------+-------------------+----------+------------+
+| CID001 | John  | john@example.com  | 12345670 | 1990-01-01 |
+| CID002 | Alice | alice@example.com | 98765432 | 1995-05-10 |
+| CID003 | Bob   | bob@example.com   | 55566677 | 1985-12-15 |
++--------+-------+-------------------+----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> show tables;
++----------------+
+| Tables_in_view |
++----------------+
+| Demo_view      |
+| customer       |
++----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from Demo_view;
+ERROR 1356 (HY000): View 'view.Demo_view' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
