@@ -2,19 +2,24 @@
 
 int main() {
     int n;
-    printf("Enter The Number Of Process:");
+    printf("Enter the number of processes: ");
     scanf("%d", &n);
 
-    int bt[n], tat[n], wt[n], tq, sq = 0, rem_bt[n], temp;
+    int bt[n], at[n], tat[n], wt[n], tq, sq = 0, rem_bt[n], temp;
     float avgtat = 0, avgwt = 0;
     
     for (int i = 0; i < n; i++) {
-        printf("Enter The Burst Time Of Process P%d: ", i);
+        printf("Enter the burst time of process P%d: ", i + 1); // Adjusted process numbering
         scanf("%d", &bt[i]);
         rem_bt[i] = bt[i];
     }
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter the arrival time of process P%d: ", i + 1); // Adjusted process numbering
+        scanf("%d", &at[i]);
+    }
     
-    printf("Enter The Time Quantum :");
+    printf("Enter the time quantum: ");
     scanf("%d", &tq);
 
     while (1) {
@@ -28,10 +33,9 @@ int main() {
                 rem_bt[i] -= tq;
                 sq += tq; // Increment total time
             } else {
-                temp = rem_bt[i];
+                sq += rem_bt[i]; // Increment total time by remaining burst time
+                tat[i] = sq - at[i]; // Calculate turnaround time
                 rem_bt[i] = 0;
-                sq += temp; // Increment total time
-                tat[i] = sq; // Calculate turnaround time
             }
         }
         if (cnt == n) { // All processes completed
@@ -39,18 +43,17 @@ int main() {
         }
     }
 
-    printf("Process\tBt\tTat\tWt\n");
+    printf("Process\tBt\tAt\tTat\tWt\n");
     for (int i = 0; i < n; i++) {
         wt[i] = tat[i] - bt[i];
         avgwt += wt[i];
         avgtat += tat[i];
-        printf("%d\t%d\t%d\t%d\n", i, bt[i], tat[i], wt[i]);
+        printf("%d\t%d\t%d\t%d\t%d\n", i + 1, bt[i], at[i], tat[i], wt[i]); // Adjusted process numbering
     }
     avgwt /= n;
     avgtat /= n;
-    printf("Average Waiting Time Is %f\n", avgwt);
-    printf("Average Turnaround Time Is %f\n", avgtat);
+    printf("Average Waiting Time is %f\n", avgwt);
+    printf("Average Turnaround Time is %f\n", avgtat);
 
     return 0;
 }
-
