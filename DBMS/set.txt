@@ -1,0 +1,162 @@
+mysql> use sets;
+Database changed
+mysql> create table table1(id int(3),tname varchar(10));
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+
+mysql> create table table2(id int(3),tname varchar(10));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> insert into table1 values(101,'a');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into table1 values(102,'b');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into table1 values(103,'c');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into table1 values(104,'d');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into table2 values(1,'aaa');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into table2 values(2,'bbb');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into table2 values(3,'ccc');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into table2 values(4,'ddd');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from tabel1;
+ERROR 1146 (42S02): Table 'sets.tabel1' doesn't exist
+mysql> show tables;
++----------------+
+| Tables_in_sets |
++----------------+
+| table1         |
+| table2         |
++----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from table1;
++------+-------+
+| id   | tname |
++------+-------+
+|  101 | a     |
+|  102 | b     |
+|  103 | c     |
+|  104 | d     |
++------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from table2;
++------+-------+
+| id   | tname |
++------+-------+
+|    1 | aaa   |
+|    2 | bbb   |
+|    3 | ccc   |
+|    4 | ddd   |
++------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select id from table1
+    -> union
+    -> select id from table1;
++------+
+| id   |
++------+
+|  101 |
+|  102 |
+|  103 |
+|  104 |
++------+
+4 rows in set (0.00 sec)
+
+mysql> select id from table1 union select id from table2;
++------+
+| id   |
++------+
+|  101 |
+|  102 |
+|  103 |
+|  104 |
+|    1 |
+|    2 |
+|    3 |
+|    4 |
++------+
+8 rows in set (0.00 sec)
+
+mysql> select id from table1 union select tname  from table2;
++------+
+| id   |
++------+
+| 101  |
+| 102  |
+| 103  |
+| 104  |
+| aaa  |
+| bbb  |
+| ccc  |
+| ddd  |
++------+
+8 rows in set (0.00 sec)
+
+mysql> select * from table1 union select *  from table2;
++------+-------+
+| id   | tname |
++------+-------+
+|  101 | a     |
+|  102 | b     |
+|  103 | c     |
+|  104 | d     |
+|    1 | aaa   |
+|    2 | bbb   |
+|    3 | ccc   |
+|    4 | ddd   |
++------+-------+
+8 rows in set (0.00 sec)
+
+mysql> select * from table1 union select id from table2;
+ERROR 1222 (21000): The used SELECT statements have a different number of columns
+mysql> select id from table1 union select id from table2;
++------+
+| id   |
++------+
+|  101 |
+|  102 |
+|  103 |
+|  104 |
+|    1 |
+|    2 |
+|    3 |
+|    4 |
++------+
+8 rows in set (0.00 sec)
+
+mysql> select id from table1 union select id,name from table2;
+ERROR 1054 (42S22): Unknown column 'name' in 'field list'
+mysql> select id from table1 union select id,tname from table2;
+ERROR 1222 (21000): The used SELECT statements have a different number of columns
+mysql> select id from table1 intersect  select id from table2;
+Empty set (0.00 sec)
+
+mysql> select id from table1 intersect  select id from table1;
++------+
+| id   |
++------+
+|  101 |
+|  102 |
+|  103 |
+|  104 |
++------+
+4 rows in set (0.00 sec)
+
+mysql> select id from table1 except  select id from table1;
+Empty set (0.00 sec)
+
+mysql> notee;

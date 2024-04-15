@@ -1,0 +1,91 @@
+mysql> create table demo(name varchar(10));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into demo values('abvs');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> 
+mysql> insert into demo values('gjvvyc');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into demo values('iyhgt6r5c');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into demo values('axsa');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into demo values('aaa');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into demo values('vcfdae');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from demo;
++-----------+
+| name      |
++-----------+
+| abvs      |
+| gjvvyc    |
+| iyhgt6r5c |
+| axsa      |
+| aaa       |
+| vcfdae    |
++-----------+
+6 rows in set (0.00 sec)
+
+mysql> select name from demo 
+    -> where name like 'a%';
++------+
+| name |
++------+
+| abvs |
+| axsa |
+| aaa  |
++------+
+3 rows in set (0.00 sec)
+
+mysql> select name from demo  where name like '%a';
++------+
+| name |
++------+
+| axsa |
+| aaa  |
++------+
+2 rows in set (0.00 sec)
+
+mysql> select name from demo  where name like '%a%';
++--------+
+| name   |
++--------+
+| abvs   |
+| axsa   |
+| aaa    |
+| vcfdae |
++--------+
+4 rows in set (0.00 sec)
+
+mysql> select name from demo  where name like '_a%';
++------+
+| name |
++------+
+| aaa  |
++------+
+1 row in set (0.01 sec)
+
+mysql> select name from demo  where name like '__f%';
++--------+
+| name   |
++--------+
+| vcfdae |
++--------+
+1 row in set (0.00 sec)
+
+mysql> select name from demo  where name like '__f%_e';
++--------+
+| name   |
++--------+
+| vcfdae |
++--------+
+1 row in set (0.00 sec)
+
+mysql> notee;
