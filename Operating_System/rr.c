@@ -9,16 +9,14 @@ int main() {
     float avgtat = 0, avgwt = 0;
     
     for (int i = 0; i < n; i++) {
+        printf("Enter the arrival time of process P%d: ", i + 1); // Adjusted process numbering
+        scanf("%d", &at[i]);
         printf("Enter the burst time of process P%d: ", i + 1); // Adjusted process numbering
         scanf("%d", &bt[i]);
         rem_bt[i] = bt[i];
     }
 
-    for (int i = 0; i < n; i++) {
-        printf("Enter the arrival time of process P%d: ", i + 1); // Adjusted process numbering
-        scanf("%d", &at[i]);
-    }
-    
+   
     printf("Enter the time quantum: ");
     scanf("%d", &tq);
 
