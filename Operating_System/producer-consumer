@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Global variables for semaphore and buffer management
+int mutex = 1, full = 0, empty = 3, x = 0;
+
+// Function declarations
+int wait(int s);
+int signal(int s);
+void producer();
+void consumer();
+
+int main() {
+    int n;
+    while(1) {
+        printf("1. Producer\n");
+        printf("2. Consumer\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &n);
+
+        switch(n) {
+            case 1: 
+                if((mutex == 1) && (empty != 0)) {
+                    producer();
+                } else {
+                    printf("Buffer is full\n");
+                }
+                break;
+            case 2: 
+                if((mutex == 1) && (full != 0)) {
+                    consumer();
+                } else {
+                    printf("Buffer is empty\n");
+                }
+                break;
+            case 3: 
+                exit(0);
+                break;
+            default: 
+                printf("Invalid choice. Please try again.\n");
+                break;
+        }
+    }
+    return 0;
+}
+
+// Function to simulate waiting (decrementing semaphore)
+int wait(int s) {
+    return (--s);
+}
+
+// Function to simulate signaling (incrementing semaphore)
+int signal(int s) {
+    return (++s);
+}
+
+// Producer function
+void producer() {
+    mutex = wait(mutex);
+    full = signal(full);
+    empty = wait(empty);
+    x++;
+    printf("Producer produces an item %d\n", x);
+    mutex = signal(mutex);
+}
+
+// Consumer function
+void consumer() {
+    mutex = wait(mutex);
+    full = wait(full);
+    empty = signal(empty);
+    printf("Consumer consumes an item %d\n", x);
+    x--;
+    mutex = signal(mutex);
+}
