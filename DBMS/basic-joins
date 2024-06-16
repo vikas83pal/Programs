@@ -1,0 +1,291 @@
+mysql> create table suppliers(sid varchar(10) primary key,sname varchar(10),address varchar(10));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc suppliers;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| sid     | varchar(10) | NO   | PRI | NULL    |       |
+| sname   | varchar(10) | YES  |     | NULL    |       |
+| address | varchar(10) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> insert into suppliers values('s1','Ram','Hyd');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into suppliers values('s2','Raju','Hyd');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into suppliers values('s3','shubham','sec');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into suppliers values('s4','Arun','sec');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from suppliers;
++-----+---------+---------+
+| sid | sname   | address |
++-----+---------+---------+
+| s1  | Ram     | Hyd     |
+| s2  | Raju    | Hyd     |
+| s3  | shubham | sec     |
+| s4  | Arun    | sec     |
++-----+---------+---------+
+4 rows in set (0.00 sec)
+
+mysql> create table parts(pid varchar(10),pname varchar(10),color varchar(10));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> alter table parts
+    -> add primary key(pid);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc parts;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| pid   | varchar(10) | NO   | PRI | NULL    |       |
+| pname | varchar(10) | YES  |     | NULL    |       |
+| color | varchar(10) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into parts values('p1','watch','red');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into parts values('p2','Bag','red');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into parts values('p3','shoe','green');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into parts values('p4','slippers','green');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from parts;
++-----+----------+-------+
+| pid | pname    | color |
++-----+----------+-------+
+| p1  | watch    | red   |
+| p2  | Bag      | red   |
+| p3  | shoe     | green |
+| p4  | slippers | green |
++-----+----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc suppliers;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| sid     | varchar(10) | NO   | PRI | NULL    |       |
+| sname   | varchar(10) | YES  |     | NULL    |       |
+| address | varchar(10) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc parts;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| pid   | varchar(10) | NO   | PRI | NULL    |       |
+| pname | varchar(10) | YES  |     | NULL    |       |
+| color | varchar(10) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> create table catalog(sid varchar(10),pid varchar(10),cost int(10));
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+
+mysql> drop table catalog;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table catalog(sid varchar(10),pid varchar(10),cost int(10),foreign key(sid) references suppliers(sid) foreign key(pid) references parts(pid));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'foreign key(pid) references parts(pid))' at line 1
+mysql> create table catalog(sid varchar(10),pid varchar(10),cost int(10),foreign key(sid) references suppliers(sid));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> drop table catalog;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table catalog(sid varchar(10),pid varchar(10),cost int(10),foreign key(sid) references suppliers(sid),foreign key(pid) references parts(pid));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> desc catalog;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| sid   | varchar(10) | YES  | MUL | NULL    |       |
+| pid   | varchar(10) | YES  | MUL | NULL    |       |
+| cost  | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from suppliers;
++-----+---------+---------+
+| sid | sname   | address |
++-----+---------+---------+
+| s1  | Ram     | Hyd     |
+| s2  | Raju    | Hyd     |
+| s3  | shubham | sec     |
+| s4  | Arun    | sec     |
++-----+---------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select * from parts;
++-----+----------+-------+
+| pid | pname    | color |
++-----+----------+-------+
+| p1  | watch    | red   |
+| p2  | Bag      | red   |
+| p3  | shoe     | green |
+| p4  | slippers | green |
++-----+----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into catalog values('s1','p1',1000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into catalog values('s2','p2',10500);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into catalog values('s3','p3',1050);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into catalog values('s4','p4',100);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from suppliers;
++-----+---------+---------+
+| sid | sname   | address |
++-----+---------+---------+
+| s1  | Ram     | Hyd     |
+| s2  | Raju    | Hyd     |
+| s3  | shubham | sec     |
+| s4  | Arun    | sec     |
++-----+---------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select * from parts;
++-----+----------+-------+
+| pid | pname    | color |
++-----+----------+-------+
+| p1  | watch    | red   |
+| p2  | Bag      | red   |
+| p3  | shoe     | green |
+| p4  | slippers | green |
++-----+----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from catalog;
++------+------+-------+
+| sid  | pid  | cost  |
++------+------+-------+
+| s1   | p1   |  1000 |
+| s2   | p2   | 10500 |
+| s3   | p3   |  1050 |
+| s4   | p4   |   100 |
++------+------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from suppliers s,parts p natural join catalog c where s.sid=c.sid;
++-----+---------+---------+-----+----------+-------+------+-------+
+| sid | sname   | address | pid | pname    | color | sid  | cost  |
++-----+---------+---------+-----+----------+-------+------+-------+
+| s1  | Ram     | Hyd     | p1  | watch    | red   | s1   |  1000 |
+| s2  | Raju    | Hyd     | p2  | Bag      | red   | s2   | 10500 |
+| s3  | shubham | sec     | p3  | shoe     | green | s3   |  1050 |
+| s4  | Arun    | sec     | p4  | slippers | green | s4   |   100 |
++-----+---------+---------+-----+----------+-------+------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select s.sid,s.sname,p.pname,p.color from suppliers s,parts p natural join catalog c where s.sid=c.sid;
++-----+---------+----------+-------+
+| sid | sname   | pname    | color |
++-----+---------+----------+-------+
+| s1  | Ram     | watch    | red   |
+| s2  | Raju    | Bag      | red   |
+| s3  | shubham | shoe     | green |
+| s4  | Arun    | slippers | green |
++-----+---------+----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from suppliers s,parts p natural join catalog c where s.sid=c.sid;
++-----+---------+---------+-----+----------+-------+------+-------+
+| sid | sname   | address | pid | pname    | color | sid  | cost  |
++-----+---------+---------+-----+----------+-------+------+-------+
+| s1  | Ram     | Hyd     | p1  | watch    | red   | s1   |  1000 |
+| s2  | Raju    | Hyd     | p2  | Bag      | red   | s2   | 10500 |
+| s3  | shubham | sec     | p3  | shoe     | green | s3   |  1050 |
+| s4  | Arun    | sec     | p4  | slippers | green | s4   |   100 |
++-----+---------+---------+-----+----------+-------+------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select s.sid,s.sname,p.pname from suppliers s,parts p natural join catalog where s.sid=c.sid and p.color='red';
+ERROR 1054 (42S22): Unknown column 'c.sid' in 'where clause'
+mysql> select s.sid,s.sname,p.pname from suppliers s,parts p natural join catalog c where s.sid=c.sid and p.color='red';
++-----+-------+-------+
+| sid | sname | pname |
++-----+-------+-------+
+| s1  | Ram   | watch |
+| s2  | Raju  | Bag   |
++-----+-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select s.sid,s.sname,s.address from suppliers s,parts p natural join catalog c where s.sid=c.sid and p.color='green';
++-----+---------+---------+
+| sid | sname   | address |
++-----+---------+---------+
+| s3  | shubham | sec     |
+| s4  | Arun    | sec     |
++-----+---------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select s.sid,s.sname,s.address from suppliers s,parts p natural join catalog c where s.sid=c.sid and p.color='green' and s.address='Hyd';
+Empty set (0.00 sec)
+
+mysql> select p.pid,p.pname,c.cost from parts p,catalog c natural join suppliers s where c.sid=s.sid;
+ERROR 1046 (3D000): No database selected
+mysql> use company;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select p.pid,p.pname,c.cost from parts p,catalog c natural join suppliers s where c.sid=s.sid;
++-----+----------+-------+
+| pid | pname    | cost  |
++-----+----------+-------+
+| p4  | slippers |  1000 |
+| p3  | shoe     |  1000 |
+| p2  | Bag      |  1000 |
+| p1  | watch    |  1000 |
+| p4  | slippers | 10500 |
+| p3  | shoe     | 10500 |
+| p2  | Bag      | 10500 |
+| p1  | watch    | 10500 |
+| p4  | slippers |  1050 |
+| p3  | shoe     |  1050 |
+| p2  | Bag      |  1050 |
+| p1  | watch    |  1050 |
+| p4  | slippers |   100 |
+| p3  | shoe     |   100 |
+| p2  | Bag      |   100 |
+| p1  | watch    |   100 |
++-----+----------+-------+
+16 rows in set (0.00 sec)
+
+mysql> select s.sid,s.sname,p.pid,p.pname,c.cost from suppliers s,parts p  natural join catalog c where s.sid=c.sid;
++-----+---------+-----+----------+-------+
+| sid | sname   | pid | pname    | cost  |
++-----+---------+-----+----------+-------+
+| s1  | Ram     | p1  | watch    |  1000 |
+| s2  | Raju    | p2  | Bag      | 10500 |
+| s3  | shubham | p3  | shoe     |  1050 |
+| s4  | Arun    | p4  | slippers |   100 |
++-----+---------+-----+----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> notee;
+mysql> Terminal close -- exit!
+Aborted
