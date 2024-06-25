@@ -1,0 +1,172 @@
+mysql> use triggerDemo;
+Database changed
+mysql> create table emp(id int(3),name varchar(10),hourly_pay int(2),sal float(10,2));
+Query OK, 0 rows affected, 3 warnings (0.02 sec)
+
+mysql> insert into emp values(1,'e1',10,1000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp values(2,'e2',9,2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into emp values(3,'e3',4,3000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp values(4,'e4',4,4000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp values(5,'e5',10,5000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp;
++------+------+------------+---------+
+| id   | name | hourly_pay | sal     |
++------+------+------------+---------+
+|    1 | e1   |         10 | 1000.00 |
+|    2 | e2   |          9 | 2000.00 |
+|    3 | e3   |          4 | 3000.00 |
+|    4 | e4   |          4 | 4000.00 |
+|    5 | e5   |         10 | 5000.00 |
++------+------+------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> alter table emp
+    -> drop column sal;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from emp;
++------+------+------------+
+| id   | name | hourly_pay |
++------+------+------------+
+|    1 | e1   |         10 |
+|    2 | e2   |          9 |
+|    3 | e3   |          4 |
+|    4 | e4   |          4 |
+|    5 | e5   |         10 |
++------+------+------------+
+5 rows in set (0.00 sec)
+
+mysql> alter table emp
+    -> add column sal float(10,2);
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> select * from emp;
++------+------+------------+------+
+| id   | name | hourly_pay | sal  |
++------+------+------------+------+
+|    1 | e1   |         10 | NULL |
+|    2 | e2   |          9 | NULL |
+|    3 | e3   |          4 | NULL |
+|    4 | e4   |          4 | NULL |
+|    5 | e5   |         10 | NULL |
++------+------+------------+------+
+5 rows in set (0.00 sec)
+
+mysql> update emp
+    -> set sal = hourly_pay * 2080;
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |         10 | 20800.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          4 |  8320.00 |
+|    4 | e4   |          4 |  8320.00 |
+|    5 | e5   |         10 | 20800.00 |
++------+------+------------+----------+
+5 rows in set (0.00 sec)
+
+
+mysql> create trigger Before_update before update on emp for each row set new.sal = (new.hourly_pay * 2080);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show triggers;
++---------------+--------+-------+---------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Trigger       | Event  | Table | Statement                             | Timing | Created                | sql_mode                                                                                                              | Definer        | character_set_client | collation_connection | Database Collation |
++---------------+--------+-------+---------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Before_update | UPDATE | emp   | set new.sal = (new.hourly_pay * 2080) | BEFORE | 2024-06-25 09:10:51.04 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+--------+-------+---------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+1 row in set (0.01 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |         10 | 20800.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          4 |  8320.00 |
+|    4 | e4   |          4 |  8320.00 |
+|    5 | e5   |         10 | 20800.00 |
++------+------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> 
+mysql> update emp
+    -> set hourly_pay = 10
+    -> where id = 4;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |         10 | 20800.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          4 |  8320.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
++------+------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> create trigger before_insert
+    -> before insert on emp
+    -> for each row
+    -> set new.sal = (new.hourly_pay * 2080)
+    -> ;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into emp (id,name,hourly_pay) values(6,'e6',10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |         10 | 20800.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          4 |  8320.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
+|    6 | e6   |         10 | 20800.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> drop trigger Before_update;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> update emp
+    -> set hourly_pay = 10
+    -> where id = 3;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |         10 | 20800.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |         10 |  8320.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
+|    6 | e6   |         10 | 20800.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> notee;
