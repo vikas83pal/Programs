@@ -217,3 +217,115 @@ mysql>
 
 
 
+    -> after insert on emp
+    -> for each row
+    -> update expenses
+    -> set total = total + new.sal
+    -> where name = 'salaries';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |         10 |  8320.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
++------+------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from expenses;
++----+-----------+----------+
+| id | name      | total    |
++----+-----------+----------+
+|  1 | salaries  | 79040.00 |
+|  2 | suppliers |     0.00 |
++----+-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> insert into emp (id,name,hourly_pay) values(6,'e6',8);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |         10 |  8320.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
+|    6 | e6   |          8 | 16640.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select * from expenses;
++----+-----------+----------+
+| id | name      | total    |
++----+-----------+----------+
+|  1 | salaries  | 95680.00 |
+|  2 | suppliers |     0.00 |
++----+-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> 
+mysql> create trigger afterupdate
+    -> after update on emp
+    -> for each row
+    -> update expenses
+    -> set total = total + (new.sal - old.sal)
+    -> where name = 'salaries';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |         10 |  8320.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
+|    6 | e6   |          8 | 16640.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> update emp
+    -> set hourly_pay = 5
+    -> where id = e3;
+ERROR 1054 (42S22): Unknown column 'e3' in 'where clause'
+mysql> update emp set hourly_pay = 5 where id = 3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          5 | 10400.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
+|    6 | e6   |          8 | 16640.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select * from eexpenses;
+ERROR 1146 (42S02): Table 'triggerDemo.eexpenses' doesn't exist
+mysql> select * from expenses;
++----+-----------+----------+
+| id | name      | total    |
++----+-----------+----------+
+|  1 | salaries  | 97760.00 |
+|  2 | suppliers |     0.00 |
++----+-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> 
+
+
+
+
