@@ -170,3 +170,150 @@ mysql> select * from emp;
 6 rows in set (0.00 sec)
 
 mysql> notee;
+
+
+mysql> create trigger afterDelete
+    -> after delete on emp
+    -> update expenses
+    -> set total = total - old.sal
+    -> where name = 'salaries';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'update expenses
+set total = total - old.sal
+where name = 'salaries'' at line 3
+mysql> create trigger afterDelete after delete on emp for each row update expenses set total = total - old.sal where name = 'salaries';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delete from emp 
+    -> where id = 6;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from expenses;
++----+-----------+----------+
+| id | name      | total    |
++----+-----------+----------+
+|  1 | salaries  | 81120.00 |
+|  2 | suppliers |     0.00 |
++----+-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          5 | 10400.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
++------+------+------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> create trigger afterinsert
+    -> after insert on emp
+    -> for each row
+    -> update expenses
+    -> set total = total + new.sal
+    -> where name = 'salaries';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into emp (id,name,hourly_pay) values(6,'e6',7);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          5 | 10400.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |         10 | 20800.00 |
+|    6 | e6   |          7 | 14560.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select * from expenses;
++----+-----------+----------+
+| id | name      | total    |
++----+-----------+----------+
+|  1 | salaries  | 95680.00 |
+|  2 | suppliers |     0.00 |
++----+-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> create trigger afterupdate
+    -> after update on emp
+    -> for each row
+    -> upadate expenses
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'expenses' at line 4
+mysql> create trigger afterupdate
+    -> after update on emp
+    -> for each row
+    -> update expenses
+    -> set total = total + (new.sal - old.sal);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> update emp
+    -> set hourly_pay = 5
+    -> where id = 5;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          5 | 10400.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |          5 | 10400.00 |
+|    6 | e6   |          7 | 14560.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select * from expenses;
++----+-----------+-----------+
+| id | name      | total     |
++----+-----------+-----------+
+|  1 | salaries  |  85280.00 |
+|  2 | suppliers | -10400.00 |
++----+-----------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from emp;
++------+------+------------+----------+
+| id   | name | hourly_pay | sal      |
++------+------+------------+----------+
+|    1 | e1   |          5 | 10400.00 |
+|    2 | e2   |          9 | 18720.00 |
+|    3 | e3   |          5 | 10400.00 |
+|    4 | e4   |         10 | 20800.00 |
+|    5 | e5   |          5 | 10400.00 |
+|    6 | e6   |          7 | 14560.00 |
++------+------+------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show triggers;
++---------------+--------+-------+---------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Trigger       | Event  | Table | Statement                                                           | Timing | Created                | sql_mode                                                                                                              | Definer        | character_set_client | collation_connection | Database Collation |
++---------------+--------+-------+---------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| before_insert | INSERT | emp   | set new.sal = (new.hourly_pay * 2080)                               | BEFORE | 2024-06-25 09:14:28.75 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| afterinsert   | INSERT | emp   | update expenses
+set total = total + new.sal
+where name = 'salaries' | AFTER  | 2024-06-27 09:10:32.20 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| beforeUpdate  | UPDATE | emp   | set NEW.sal = (NEW.hourly_pay * 2080)                               | BEFORE | 2024-06-26 23:15:21.69 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| afterupdate   | UPDATE | emp   | update expenses
+set total = total + (new.sal - old.sal)             | AFTER  | 2024-06-27 09:13:18.27 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
+| afterDelete   | DELETE | emp   | update expenses set total = total - old.sal where name = 'salaries' | AFTER  | 2024-06-27 09:08:54.57 | ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION | root@localhost | utf8mb4              | utf8mb4_0900_ai_ci   | utf8mb4_0900_ai_ci |
++---------------+--------+-------+---------------------------------------------------------------------+--------+------------------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------------+----------------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> notee;
