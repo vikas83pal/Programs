@@ -1,0 +1,26 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<dirent.h>
+
+int main(int argc,char *argv[]){
+    DIR *dp;
+    struct dirent *dirp;
+    
+    dp=opendir(argv[1]);
+    if(dp == NULL){
+        perror("open is failed");
+        return 1;
+
+    }
+
+    while((dirp = readdir(dp)) != NULL){
+        printf("DIR name : %s\n",dirp->d_name);
+    }
+    closedir(dp);
+    return 0;
+}
+
+
