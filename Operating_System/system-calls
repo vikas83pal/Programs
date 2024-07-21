@@ -1,0 +1,41 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<fcntl.h>
+
+int main(){
+
+    char bufrd[10];
+    char bufwrt[] = "Hello world";
+
+    int rfd = open("DemoRead.txt",O_RDONLY);
+    if (rfd < 0){
+        perror("Open is failed");
+        return 1;
+
+    }
+    if(read(rfd,bufrd,10) != 10){
+        perror("Reading is failed\n");
+        return 1;
+    }
+    bufrd[10] = '\0';
+    printf("Reading : %s\n",bufrd);
+    close(rfd);
+
+
+    int wfd = open("DemoWrite.txt",O_RDWR | O_CREAT , 0666);
+    if(wfd < 0){
+        perror("open failed\n");
+        return 1;
+    }
+
+    if(write(wfd,bufwrt,10) != 10){
+        perror("Writing failed\n");
+        return 1;
+
+    }
+
+    printf("Writing done\n");
+    close(wfd);
+    return 0;
+}
