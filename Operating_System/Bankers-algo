@@ -1,0 +1,191 @@
+
+// #include<stdio.h>
+// #include<stdlib.h>
+
+// int mutex=1,full=0,empty=3,x=0;
+// int wait(int s);
+// int signal(int s);
+// void producer();
+// void consumer();
+
+// int main(){
+
+//     int ch;
+
+//     while(1){
+//         printf("1. producer\n");
+//         printf("2. consumer\n");
+//         printf("3. Exit\n");
+
+//         printf("Enter the choice\n");
+//         scanf("%d",&ch);
+
+//         switch(ch){
+//             case 1:if(mutex == 1 && empty != 0){
+//                     producer();
+//                 }else{
+//                     printf("Buffer Is full\n");
+//                 }
+//                 break;
+//             case 2:if(mutex == 1 && full !=0){
+//                     consumer();
+//                 }else{
+//                     printf("Buffer is empty\n");
+//                 }
+//                 break;
+//             case 3:exit(1);
+
+//         }
+//     }
+// }
+
+// int wait(int s){
+//     return (--s);
+// }
+
+// int signal(int s){
+//     return (++s);
+// }
+
+// void producer(){
+//     mutex=wait(mutex);
+//     full=signal(full);
+//     empty=wait(empty);
+//     x++;
+//     printf("producer is produces an item %d\n",x);
+//     mutex=signal(mutex);
+// }
+
+// void consumer(){
+//     mutex=wait(mutex);
+//     full=wait(full);
+//     empty=signal(empty);
+//     printf("Consumer consumes an item %d\n",x);
+//     x--;
+//     mutex=signal(mutex);
+// }
+
+// banker algorithm
+
+#include <stdio.h>
+
+int np, nr;
+int allo[10][10], max[10][10], avail[10], need[10][10];
+
+void disp(int arr[10][10]);
+void calNeed();
+void bankerAlog();
+
+int main()
+{
+    printf("Enter the number of process\n");
+    scanf("%d", &np);
+
+    printf("Enter the number of resource\n");
+    scanf("%d", &nr);
+
+    printf("Enter The Allocation Matrix\n");
+    for (int i = 0; i < np; i++)
+    {
+        for (int j = 0; j < nr; j++)
+        {
+            scanf("%d", &allo[i][j]);
+        }
+    }
+
+    printf("Enter The Max Matrix\n");
+    for (int i = 0; i < np; i++)
+    {
+        for (int j = 0; j < nr; j++)
+        {
+            scanf("%d", &max[i][j]);
+        }
+    }
+
+    printf("\nEnter the available matrix\n");
+    for (int i = 0; i < nr; i++)
+    {
+        scanf("%d", &avail[i]);
+    }
+
+    printf("\nAllocation Matrix\n");
+    disp(allo);
+
+    printf("\nMaximum requirements\n");
+    disp(max);
+
+    printf("\nAvailable matrix\n");
+    for (int i = 0; i < nr; i++)
+    {
+        printf("%d ", avail[i]);
+    }
+
+    calNeed();
+    printf("\nNeed Matrix\n");
+    disp(need);
+    bankerAlog();
+
+    return 0;
+}
+
+void disp(int arr[10][10])
+{
+    for (int i = 0; i < np; i++)
+    {
+        printf("\nP%d ", i);
+        for (int j = 0; j < nr; j++)
+        {
+            printf("%d ", arr[i][j]);
+        }
+    }
+}
+
+void calNeed()
+{
+    for (int i = 0; i < np; i++)
+    {
+        for (int j = 0; j < nr; j++)
+        {
+            need[i][j] = max[i][j] - allo[i][j];
+        }
+    }
+}
+
+void bankerAlog() {
+    int finish[10] = {0}, safesq[10], work[10];
+    for (int i = 0; i < nr; i++) {
+        work[i] = avail[i];
+    }
+
+    int cnt = 0;
+    while (cnt < np) {
+        int found = 0;
+        for (int p = 0; p < np; p++) {
+            if (finish[p] == 0) {
+                int j;
+                for (j = 0; j < nr; j++) {
+                    if (need[p][j] > work[j])
+                        break;
+                }
+                if (j == nr) {
+                    for (int k = 0; k < nr; k++) {
+                        work[k] += allo[p][k];
+                    }
+                    safesq[cnt++] = p;
+                    finish[p] = 1;
+                    found = 1;
+                }
+            }
+        }
+        if (found == 0) {
+            printf("The System is in a deadlock.\n");
+            return;
+        }
+    }
+
+    printf("\nThe System is in a safe state and the safe sequence is:\n");
+    for (int i = 0; i < cnt; i++) {
+        printf("P%d ", safesq[i]);
+    }
+    printf("\n");
+}
