@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define PAGE_SIZE 4 // Defining page size
+
+// Structure to represent a page table entry
+typedef struct {
+    int frameNumber;
+    int valid;
+} PageTableEntry;
+
+// Function to initialize the page table
+void initializePageTable(PageTableEntry pageTable[], int size) {
+    for (int i = 0; i < size; i++) {
+        pageTable[i].frameNumber = -1; // Invalid frame number initially
+        pageTable[i].valid = 0;        // Page is not in memory initially
+    }
+}
+
+// Function to simulate address translation
+int translateAddress(PageTableEntry pageTable[], int logicalAddress, int numFrames, int frames[], int *nextFrame, int *pageFaults) {
+    int pageNumber = logicalAddress / PAGE_SIZE;
+    int offset = logicalAddress % PAGE_SIZE;
+
+    if (pageTable[pageNumber].valid) {
+        int frameNumber = pageTable[pageNumber].frameNumber;
+        int physicalAddress = frameNumber * PAGE_SIZE + offset;
+        return physicalAddress;
+    } else {
+        printf("Page fault! Page number %d is not in memory.\n", pageNumber);
+        pageTable[pageNumber].frameNumber = *nextFrame;
+        pageTable[pageNumber].valid = 1;
+        frames[*nextFrame] = pageNumber;
+        *nextFrame = (*nextFrame + 1) % numFrames;
+        (*pageFaults)++;
+        return -1;
+    }
+}
+
+void printFrames(int frames[], int numFrames) {
+    for (int i = 0; i < numFrames; i++) {
+        if (frames[i] == -1)
+            printf("- ");
+        else
+            printf("%d ", frames[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int numFrames, numPages;
+
+    printf("Enter the number of frames: ");
+    scanf("%d", &numFrames);
+
+    printf("Enter the number of pages: ");
+    scanf("%d", &numPages);
+
+    int pages[numPages];
+    printf("Enter the reference string: ");
+    for (int i = 0; i < numPages; i++) {
+        scanf("%d", &pages[i]);
+    }
+
+    PageTableEntry pageTable[numPages];
+    initializePageTable(pageTable, numPages);
+
+    int frames[numFrames];
+    for (int i = 0; i < numFrames; i++) {
+        frames[i] = -1;
+    }
+
+    int pageFaults = 0;
+    int nextFrame = 0;
+
+    for (int i = 0; i < numPages; i++) {
+        int logicalAddress = pages[i] * PAGE_SIZE;
+        int physicalAddress = translateAddress(pageTable, logicalAddress, numFrames, frames, &nextFrame, &pageFaults);
+        if (physicalAddress != -1) {
+            printf("Logical address %d -> Physical address %d\n", logicalAddress, physicalAddress);
+        }
+        printFrames(frames, numFrames);
+    }
+
+    printf("Total page faults: %d\n", pageFaults);
+    return 0;
+}
+
