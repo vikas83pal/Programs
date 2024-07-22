@@ -1,0 +1,52 @@
+#include<stdio.h>
+void printFrame(int frame[],int numframe);
+int main(){
+	int numpage,numframe;
+	printf("Enter the number of frame:");
+	scanf("%d",&numframe);
+	
+	printf("Enter the number of page:");
+	scanf("%d",&numpage);
+	
+	int pg[numpage];
+	printf("Enter the reference string:");
+	for(int i=0;i<numpage;i++){
+		scanf("%d",&pg[i]);
+	}
+	
+	int frame[numframe];
+	for(int i=0;i<numframe;i++){
+		frame[i] = -1;
+	}
+	int pagefault=0;
+	int nextframe;
+	for(int i=0;i<numpage;i++){
+		int found=0;
+		for(int j=0;j<numframe;j++){
+			if(frame[j] == pg[i]){
+				found = 1;
+				break;
+			}
+		}
+		if(!found){
+			frame[nextframe] = pg[i];
+			nextframe = (nextframe + 1) % numframe;
+			pagefault++;
+			printFrame(frame,numframe);
+			
+		}
+	}
+	printf("Total page fault is %d\n",pagefault);
+	return 0;
+}
+void printFrame(int frame[],int numframe){
+	for(int i=0;i<numframe;i++){
+		if(frame[i] == -1){
+			printf("- ");
+		}else{
+			printf("%d",frame[i]);
+		}
+		printf(" ");
+	}
+	printf("\n");
+}
